@@ -1,0 +1,38 @@
+How to build docker image, step by step guide for Mac
+
+1. Install docker app for your desktop and sing in (create your docker account)
+https://docs.docker.com/desktop/
+
+2. Create docker hub account
+https://hub.docker.com
+
+3. Install Xcode from App Store (need Apple ID)
+
+4. Create GitHub account and repo
+
+5. Install Git in Docker app
+
+6. Build your docker image (can pull from GitHub or locally)
+
+Locally:
+
+Have a “Dockerfile” in the directory, where you want to run “build” cmd
+
+#build docker image from Docker file in current directory .
+$docker build -t nf-repeatmasker .
+
+#save docker image to tar archive
+$docker save -o nf-repeatmasker.tar nf-repeatmasker 
+
+#prepare your docker image for push to your docker hub repo
+#docker tag image_id yourhubusername/reponame:tag
+docker tag b6b2891f13ae zifcakova/nf-pipelines_repo:tag
+
+#push docker image to your docker hub repo
+#docker push yourhubusername/reponame:tag
+docker push zifcakova/nf-pipelines_repo:tag
+
+
+7. Pulling a Docker image from docker hub and create singularity image.sif
+singularity pull --docker-login nf-pipelines_repo.sif docker://zifcakova/nf-pipelines_repo:tag
+
