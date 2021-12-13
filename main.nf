@@ -369,7 +369,7 @@ RepeatMasker \
 
 process RepeatModeler {
   container 'luciazifcakova/nf-repeatmasker_4_0_6_docker_patch_with_lib'
-  cpus 4
+  cpus 10
 
   input:
   file 'genome.masked' from genomeLtrMasked
