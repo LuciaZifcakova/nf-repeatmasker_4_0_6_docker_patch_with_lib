@@ -266,7 +266,7 @@ blastxPassed
 process buildExemplars {
   container 'luciazifcakova/nf-repeatmasker_4_0_6_docker_patch_with_lib'
   tag { age }
-  cpus 4
+  cpus 10
 
   input:
   file 'genome.fasta' from reference
