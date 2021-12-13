@@ -1,3 +1,4 @@
+#modified from robsyme/nf-repeatmasking-onbuild
 FROM ubuntu:14.04
 
 RUN apt-get update && apt-get install -qqy \
@@ -37,7 +38,7 @@ RUN wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/rmblast/2.2.28/ncbi-rmblas
     rm -rf ncbi-rmblastn
 
 # Install Blast+
-RUN wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.6.0/ncbi-blast-2.6.0+-x64-linux.tar.gz && \
+RUN wget 'ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.6.0/ncbi-blast-2.6.0+-x64-linux.tar.gz' && \
     tar -xzvf ncbi-blast* && \
     find ncbi-blast* -type f -executable -exec mv {} bin \; && \
     rm -rf ncbi-blast*
@@ -130,10 +131,11 @@ RUN apt-get install -qqy aragorn
 # Install bioruby
 RUN apt-get install -qqy ruby ruby-bio
 
-#ONBUILD WORKDIR /usr/local/RepeatMasker
-#ONBUILD ADD repeatmaskerlibraries.tar.gz /usr/local/RepeatMasker
-#ONBUILD RUN cd /usr/local/RepeatMasker && util/buildRMLibFromEMBL.pl Libraries/RMRBSeqs.embl > Libraries/RepeatMasker.lib \
-		&& makeblastdb -dbtype nucl -in Libraries/RepeatMasker.lib > /dev/null 2>&1 \
+ONBUILD WORKDIR /usr/local/RepeatMasker
+ONBUILD ADD repeatmaskerlibraries.tar.gz /usr/local/RepeatMasker 
+
+ONBUILD RUN cd /usr/local/RepeatMasker && util/buildRMLibFromEMBL.pl Libraries/RMRBSeqs.embl > Libraries/RepeatMasker.lib \
+	&& makeblastdb -dbtype nucl -in Libraries/RepeatMasker.lib > /dev/null 2>&1 \
         && makeblastdb -dbtype prot -in Libraries/RepeatPeps.lib > /dev/null 2>&1
 
 ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/RepeatMasker:/usr/local/RepeatScout:/usr/local/recon/bin:/usr/local/RepeatModeler:/usr/local/mdust:/usr/local/mitehunter
