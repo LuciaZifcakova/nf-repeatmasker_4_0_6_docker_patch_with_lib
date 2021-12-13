@@ -513,7 +513,7 @@ process predict_ncRNA {
   """
 cp /opt/data/cm/rnas.cm models.cm
 cmpress -F models.cm
-cmsearch --cpu 1 --tblout cm_out --cut_ga models.cm genome.fasta
+cmsearch --cpu 10 --tblout cm_out --cut_ga models.cm genome.fasta
   """
 }
 
