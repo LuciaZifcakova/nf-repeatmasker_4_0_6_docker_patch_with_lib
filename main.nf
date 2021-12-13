@@ -18,7 +18,7 @@ log.info "output directory   : ${params.outdir}"
 log.info ""
 
 process recentLTRs {
-  container 'robsyme/nf-repeatmasking'
+  container ' luciazifcakova/nf-repeatmasker_4_0_6_docker_patch_with_lib '
   cache 'deep'
 
   input:
@@ -78,7 +78,7 @@ CRL_Step2.pl \
 }
 
 process olderLTRs {
-  container 'robsyme/nf-repeatmasking'
+  container 'luciazifcakova/nf-repeatmasker_4_0_6_docker_patch_with_lib'
   cache 'deep'
 
   input:
@@ -142,7 +142,7 @@ outinnerForBlastX = outinnerForBlastXOld.mix(outinnerForBlastXNew)
 ltrHarvestResultsForExemplar = ltrHarvestResultsForExemplarOld.mix(ltrHarvestResultsForExemplarNew)
 
 process CRL_Step3 {
-  container 'robsyme/nf-repeatmasking'
+  container 'luciazifcakova/nf-repeatmasker_4_0_6_docker_patch_with_lib'
   tag { age }
 
   input:
@@ -166,7 +166,7 @@ ltrHarvestResults
 .set { nestedInput }
 
 process identifyNestedInsetions {
-  container 'robsyme/nf-repeatmasking'
+  container 'luciazifcakova/nf-repeatmasker_4_0_6_docker_patch_with_lib'
   tag { age }
   input:
   file 'genome.fasta' from reference
@@ -187,7 +187,7 @@ cat lLTR_Only.lib \
 }
 
 process RepeatMasker1 {
-  container 'robsyme/nf-repeatmasking'
+  container 'luciazifcakova/nf-repeatmasker_4_0_6_docker_patch_with_lib'
   tag { age }
 
   input:
@@ -226,9 +226,9 @@ rmshortinner.pl seqfile.outinner.unmasked 50 > seqfile.outinner.clean
 }
 
 process blastX {
-  container 'robsyme/nf-repeatmasking'
+  container 'luciazifcakova/nf-repeatmasker_4_0_6_docker_patch_with_lib'
   tag { age }
-  cpus 4
+  cpus 10
 
   input:
   file 'Tpases020812DNA.fasta.gz' from trnaprot
@@ -264,7 +264,7 @@ blastxPassed
 .set { forExemplarBuilding }
 
 process buildExemplars {
-  container 'robsyme/nf-repeatmasking'
+  container 'luciazifcakova/nf-repeatmasker_4_0_6_docker_patch_with_lib'
   tag { age }
   cpus 4
 
@@ -310,7 +310,7 @@ exemplars
 .choice( newLTRs, oldLTRs ) { it[0] == "new" ? 0 : 1 }
 
 process removeDuplicates {
-  container 'robsyme/nf-repeatmasking'
+  container 'luciazifcakova/nf-repeatmasker_4_0_6_docker_patch_with_lib'
 
   input:
   set _, 'ltrs.new.fasta' from newLTRs
@@ -323,7 +323,7 @@ process removeDuplicates {
 }
 
 process filterOldLTRs {
-  container 'robsyme/nf-repeatmasking'
+  container 'luciazifcakova/nf-repeatmasker_4_0_6_docker_patch_with_lib'
 
   input:
   set 'ltrs.old.fasta.masked', 'ltrs.new.fasta' from bothLTRforMasking
@@ -346,7 +346,7 @@ allLTR
 .set { inputForRM2 }
 
 process RepeatMasker2 {
-  container 'robsyme/nf-repeatmasking'
+  container 'luciazifcakova/nf-repeatmasker_4_0_6_docker_patch_with_lib'
   cpus 10
 
   input:
@@ -368,7 +368,7 @@ RepeatMasker \
 }
 
 process RepeatModeler {
-  container 'robsyme/nf-repeatmasking'
+  container 'luciazifcakova/nf-repeatmasker_4_0_6_docker_patch_with_lib'
   cpus 4
 
   input:
@@ -402,7 +402,7 @@ identityKnown
 .set{ repeatmaskerKnowns }
 
 process searchForUnidentifiedElements {
-  container 'robsyme/nf-repeatmasking'
+  container 'luciazifcakova/nf-repeatmasker_4_0_6_docker_patch_with_lib'
 
   input:
   file 'genome.fasta' from reference
@@ -424,7 +424,7 @@ RepeatMasker \
 }
 
 process derip {
-  container 'robsyme/nf-repeatmasking'
+  container 'luciazifcakova/nf-repeatmasker_4_0_6_docker_patch_with_lib'
 
   input:
   set 'genome.fasta.align', 'unknown_elements.fasta' from unknownAlignments
@@ -472,8 +472,8 @@ transposon_blast_parse.pl \
 identifiedDerippedTransposons.subscribe{ println("Identified, deripped: ${it}") }
 
 process transposonBlast {
-  container 'robsyme/nf-repeatmasking'
-  cpus 4
+  container 'luciazifcakova/nf-repeatmasker_4_0_6_docker_patch_with_lib'
+  cpus 10
 
   input:
   file 'transposases.fasta.gz' from trnaprot
@@ -543,7 +543,7 @@ repeatmaskerKnowns
 .set { knownRepeats }
 
 process repeatMaskerKnowns {
-  container 'robsyme/nf-repeatmasking'
+  container 'luciazifcakova/nf-repeatmasker_4_0_6_docker_patch_with_lib'
   publishDir "${params.outdir}/repeatMaskerKnowns", mode: 'copy'
 
   input:
@@ -568,7 +568,7 @@ RepeatMasker \
 }
 
 process removeShortMatches {
-  container 'robsyme/nf-repeatmasking'
+  container 'luciazifcakova/nf-repeatmasker_4_0_6_docker_patch_with_lib'
   publishDir "${params.outdir}/cleanMasked", mode: 'copy'
 
   input:
@@ -587,7 +587,7 @@ maskFastaFromBed -fi reference.fa -bed rm.trimmed.bed -fo rm.trimmed.masked -sof
 }
 
 process octfta {
-  container 'robsyme/nf-repeatmasking'
+  container 'luciazifcakova/nf-repeatmasker_4_0_6_docker_patch_with_lib'
 
   input:
   file 'reference.fa' from reference
